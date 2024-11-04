@@ -1,0 +1,12 @@
+{
+    "platform": "Paddle Platform",
+    "welcome": "Welcome",
+    "welcomeUser": "Welcome, {name}.",
+    "please": "Please",
+    "login": "log in",
+    "register": "register",
+    "viewMatches": "View Matches",
+    "createMatch": "Create a Match",
+    "or": "or"
+  }
+  

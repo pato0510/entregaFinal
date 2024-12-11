@@ -1,5 +1,3 @@
-// app/components/ChatBox.js
-
 'use client';
 
 import { useState, useRef } from 'react';
@@ -13,22 +11,28 @@ export default function ChatBox() {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-
+  
     setMessages((prevMessages) => [
       ...prevMessages,
       { sender: 'user', text: input },
     ]);
     setLoading(true);
-
+  
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input }),
       });
+  
       const data = await response.json();
-
-      if (data.reply) {
+  
+      if (response.status === 429) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { sender: 'bot', text: 'Límite de uso alcanzado. Intenta más tarde o revisa tu plan.' },
+        ]);
+      } else if (data.reply) {
         setMessages((prevMessages) => [
           ...prevMessages,
           { sender: 'bot', text: data.reply },
@@ -36,22 +40,21 @@ export default function ChatBox() {
       } else {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { sender: 'bot', text: 'Lo siento, hubo un error.' },
+          { sender: 'bot', text: 'Hubo un error al procesar tu mensaje.' },
         ]);
       }
     } catch (error) {
       console.error('Error al enviar el mensaje:', error);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: 'bot', text: 'Lo siento, hubo un error.' },
+        { sender: 'bot', text: 'Hubo un error al procesar tu mensaje.' },
       ]);
     } finally {
       setLoading(false);
       setInput('');
-      // Desplazar al final de los mensajes
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   };
+  
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -96,6 +99,7 @@ export default function ChatBox() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Escribe un mensaje..."
+              disabled={loading}
             />
             <button
               className={`p-2 ${

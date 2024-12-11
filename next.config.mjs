@@ -1,12 +1,11 @@
-// next.config.mjs
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  i18n: {
-    locales: ['es', 'en'],
-    defaultLocale: 'es',
+  reactStrictMode: true,
+  // Otras configuraciones que puedas tener
+  env: {
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
-  // Otras configuraciones...
 };
 
 export default nextConfig;
